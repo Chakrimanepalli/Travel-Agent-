@@ -1,0 +1,9 @@
+google-adk
+toolbox-core
+streamlit
+python-dotenv
+google-cloud-aiplatform
+litellm
+requests
+pandas
+uuid
