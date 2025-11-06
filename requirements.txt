@@ -1,0 +1,9 @@
+google-adk==0.1.0
+toolbox-core==1.0.0
+streamlit==1.28.1
+python-dotenv==1.0.0
+google-cloud-aiplatform==1.40.0
+litellm==1.0.0
+requests==2.31.0
+pandas==2.1.1
+uuid==1.30

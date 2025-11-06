@@ -1,0 +1,67 @@
+sources:
+  my-hotels-source:
+    kind: postgres
+    host: localhost
+    port: 5432
+    database: travel_db
+    user: toolbox_user
+    password: "your-secure-password"
+
+tools:
+  search-hotels-by-location:
+    kind: postgres-sql
+    source: my-hotels-source
+    description: Search for hotels based on location. Results sorted by price.
+    parameters:
+      - name: location
+        type: string
+        description: The city or location to search for hotels.
+    statement: |
+      SELECT * FROM hotels 
+      WHERE location ILIKE '%' || $1 || '%'
+      ORDER BY
+        CASE price_tier
+          WHEN 'Midscale' THEN 1
+          WHEN 'Upper Midscale' THEN 2
+          WHEN 'Upscale' THEN 3
+          WHEN 'Upper Upscale' THEN 4
+          WHEN 'Luxury' THEN 5
+          ELSE 99
+        END;
+
+  search-hotels-by-name:
+    kind: postgres-sql
+    source: my-hotels-source
+    description: Search for hotels by hotel name.
+    parameters:
+      - name: name
+        type: string
+        description: The name of the hotel to search for.
+    statement: SELECT * FROM hotels WHERE name ILIKE '%' || $1 || '%';
+
+  get-hotel-availability:
+    kind: postgres-sql
+    source: my-hotels-source
+    description: Check hotel availability for specific dates.
+    parameters:
+      - name: hotel_id
+        type: integer
+        description: The ID of the hotel.
+      - name: checkin_date
+        type: string
+        description: Check-in date in YYYY-MM-DD format.
+      - name: checkout_date
+        type: string
+        description: Check-out date in YYYY-MM-DD format.
+    statement: |
+      SELECT * FROM hotels 
+      WHERE id = $1 
+      AND booked = B'0'
+      AND checkin_date <= $2 
+      AND checkout_date >= $3;
+
+toolsets:
+  travel_toolset:
+    - search-hotels-by-location
+    - search-hotels-by-name
+    - get-hotel-availability

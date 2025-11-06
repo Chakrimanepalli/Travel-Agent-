@@ -1,0 +1,44 @@
+-- Travel Agent Database Setup
+-- PostgreSQL Database Schema and Sample Data
+
+-- Create user and database
+CREATE USER toolbox_user WITH PASSWORD 'change-this-password';
+CREATE DATABASE travel_db;
+GRANT ALL PRIVILEGES ON DATABASE travel_db TO toolbox_user;
+ALTER DATABASE travel_db OWNER TO toolbox_user;
+
+\c travel_db toolbox_user
+
+-- Create hotels table
+CREATE TABLE hotels (
+    id INTEGER NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    price_tier VARCHAR(50) NOT NULL,
+    checkin_date DATE NOT NULL,
+    checkout_date DATE NOT NULL,
+    booked BIT NOT NULL DEFAULT B'0',
+    description TEXT,
+    rating DECIMAL(2,1),
+    price_per_night DECIMAL(10,2)
+);
+
+-- Insert sample hotel data
+INSERT INTO hotels(id, name, location, price_tier, checkin_date, checkout_date, booked, description, rating, price_per_night)
+VALUES
+    (1, 'Hilton Basel', 'Basel', 'Luxury', '2024-04-20', '2024-04-22', B'0', 'Luxury hotel in the heart of Basel', 4.5, 250.00),
+    (2, 'Marriott Zurich', 'Zurich', 'Upscale', '2024-04-14', '2024-04-21', B'0', 'Modern upscale hotel', 4.3, 180.00),
+    (3, 'Hyatt Regency Basel', 'Basel', 'Upper Upscale', '2024-04-02', '2024-04-20', B'0', 'Contemporary hotel', 4.4, 220.00),
+    (4, 'Radisson Blu Lucerne', 'Lucerne', 'Midscale', '2024-04-05', '2024-04-24', B'0', 'Comfortable midscale', 4.0, 120.00),
+    (5, 'Best Western Bern', 'Bern', 'Upper Midscale', '2024-04-01', '2024-04-23', B'0', 'Cozy hotel near station', 3.9, 140.00),
+    (6, 'InterContinental Geneva', 'Geneva', 'Luxury', '2024-04-23', '2024-04-28', B'0', 'Luxury hotel overlooking lake', 4.7, 300.00),
+    (7, 'Sheraton Zurich', 'Zurich', 'Upper Upscale', '2024-04-02', '2024-04-27', B'0', 'Elegant hotel with city views', 4.4, 210.00),
+    (8, 'Holiday Inn Basel', 'Basel', 'Upper Midscale', '2024-04-09', '2024-04-24', B'0', 'Family-friendly hotel', 4.1, 150.00),
+    (9, 'Courtyard Zurich', 'Zurich', 'Upscale', '2024-04-03', '2024-04-13', B'0', 'Business hotel', 4.2, 175.00),
+    (10, 'Comfort Inn Bern', 'Bern', 'Midscale', '2024-04-04', '2024-04-16', B'0', 'Budget-friendly option', 3.8, 110.00);
+
+-- Create indexes for performance
+CREATE INDEX idx_hotels_location ON hotels(location);
+CREATE INDEX idx_hotels_price_tier ON hotels(price_tier);
+CREATE INDEX idx_hotels_dates ON hotels(checkin_date, checkout_date);
+CREATE INDEX idx_hotels_booked ON hotels(booked);
